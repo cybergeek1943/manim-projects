@@ -18,7 +18,7 @@ class Setup(Scene):
     """This scene just shows how the i-cat notation works.
     
     TODO:
-    - show more cases of the index being used for non-infinite repeats.
+    - maybe show more cases of the index being used for non-infinite repeats.
     """
     def construct(self):
             self.add(Text("I-Cat Notation Example", font_size=36).to_corner(UL, 0.5))
@@ -276,7 +276,108 @@ class Unpacking(Scene):
         self.wait(4)
 
 
-
-class Carrying(Scene):
+class Carrying(MovingCameraScene):
     def construct(self):
-        pass
+        title = Text("Addition: Carrying", font_size=36).to_corner(UL, 0.5)
+        self.add(title)
+
+        # Create numbers
+        n1 = MT('1.45').shift(UP)
+        n2 = MT(r'1. \icat^5 6').shift(DOWN)
+        self.play(Create(n1), Create(n2), run_time=1)
+        self.wait()
+
+        # show notes
+        note = Text('We want to add these two numbers.', font_size=20);
+        self.play(Create(note))
+        self.wait()
+
+        # move to adding line
+        addition_stack = VGroup(n1, n2)
+        self.play(
+            addition_stack.animate.arrange(DOWN, buff=0.3, aligned_edge=LEFT),
+            FadeOut(note)
+        )
+        plus_sign = MT('+').next_to(n2, LEFT, buff=0.5)
+        line = Line().scale_to_fit_width(addition_stack.width + 1.2).next_to(addition_stack, DOWN, buff=0.5)
+        addition_group = VGroup(addition_stack, plus_sign, line)
+        self.play(
+            FadeIn(line),
+            FadeIn(plus_sign),
+            run_time=0.5
+        )
+
+        # alignment check
+        box = SurroundingRectangle(VGroup(n1[0][2:], n2[0][2:]), color=RED, buff=0.1)
+        self.play(Create(box))
+        note.become(Text('Misaligned!', font_size=25, color=RED)).next_to(addition_group, UP, buff=0.8)
+        self.play(ReplacementTransform(box, note))
+        self.wait()
+        self.play(Transform(note, Text('Prepare: Partially Unpack', font_size=25, color=GREEN).move_to(note)))
+        self.wait()
+
+        # partially unpack
+        n2t1 = MT(r'1.6 \icat^4 6').move_to(n2, LEFT)
+        self.play(TransformMatchingShapes(n2, n2t1))
+        n2t2 = MT(r'1.66 \icat^3 6').move_to(n2, LEFT)
+        self.play(TransformMatchingShapes(n2t1, n2t2))
+        n1t = MT(r'1.45 \icat^3 0').move_to(n1, LEFT+DOWN)
+        self.play(TransformMatchingShapes(n1, n1t))
+        n1, n2 = n1t, n2t2
+        addition_stack.submobjects = [n1, n2]
+        self.wait()
+
+        # center the addition_group
+        self.play(
+            FadeOut(note),
+            addition_group.animate.center()
+        )
+
+        # calculate initial sum (with carry pre-superscripts)
+        box = SurroundingRectangle(VGroup(n1[0][6], n2[0][6]), color=BLUE, buff=0.1)
+        self.play(Create(box))
+        sum_0 = MT(r"2.^1{0} ^1{1} \icat^3 6").next_to(line, DOWN, buff=0.3)
+        sum_0.align_to(addition_stack, RIGHT)  # Align the whole block to the stack
+        sum_0.set_opacity(0)  # Hide it initially
+        self.add(sum_0)
+        _i_map = {
+            3: slice(4, 6),
+            2: slice(2, 4),
+            6: 8,
+            slice(4, 6): slice(6, 8)
+        }
+        for i in (6, slice(4, 6), 3, 2, slice(0, 2)):            
+            # Move the highlight box
+            target_box = SurroundingRectangle(VGroup(n1[0][i], n2[0][i]), color=BLUE, buff=0.1)
+            self.play(Transform(box, target_box))
+            
+            # The Merge Animation
+            # We transform the numbers into the specific, pre-aligned part of final_sum
+            _si = _i_map.get(i, i)
+            self.play(
+                ReplacementTransform(n1[0][i].copy(), sum_0[0][_si]),
+                ReplacementTransform(n2[0][i].copy(), sum_0[0][_si]),
+                sum_0[0][_si].animate.set_opacity(1),  # Reveal only this digit
+            )
+            self.wait(0.2)
+        self.play(Uncreate(box))
+        self.wait()
+
+        # perform the carries
+        self.play(self.camera.frame.animate.set_width(3).move_to(sum_0))
+        self.wait()
+        self.play(sum_0.animate.become(MT(r"2.^1{1} 1 \icat^3 6").move_to(sum_0)))
+        self.wait()
+        self.play(sum_0.animate.become(MT(r"3.11 \icat^3 6").move_to(sum_0)))
+        self.wait()
+        self.play(sum_0.animate.become(MT(r"3.\icat^2 1 \icat^3 6").move_to(sum_0)))
+        self.play(self.camera.frame.animate.set_width(14).move_to(ORIGIN))
+        self.wait()
+        
+        # final answer
+        final_group = VGroup(sum_0, addition_group)
+        self.play(
+            final_group.animate.center(),
+            final_group.animate.scale(1.3)
+        )
+        self.wait(4)
