@@ -2,7 +2,12 @@ from itertools import cycle
 from manim import *
 from manim import MathTex as MT
 import config  # to enable the I-Cat notation in all MathTex instances
-
+"""
+TODO:
+Number * icat
+Icat * Icat 
+TODO: FIX the (82) paranthesis in example.
+"""
 
 def get_sub_indexes(tex):
     ni = VGroup()
