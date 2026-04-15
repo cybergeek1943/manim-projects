@@ -7,7 +7,14 @@ To render test scenes in low quality
 ```bash
 manim --format gif -ql -o short test.py DifferentRotations
 ```
-
+To render only the last image.
+```bash
+manim -s -ql your_file.py Test
+```
+To render all scenes
+```bash
+manim -pqh your_file.py YourSceneName
+```
 
 ## WSL-Utilities Setup (For Windows on WSL)
 Docs: https://wslu.wedotstud.io/wslu/
