@@ -9,15 +9,6 @@ Icat * Icat
 Bring down the paranthesis seperately than the numbers.
 """
 
-def get_sub_indexes(tex):
-    ni = VGroup()
-    colors = cycle([RED,TEAL,GREEN,BLUE,PURPLE])
-    for i in range(len(tex)):
-        n = Text(f"{i}",color=next(colors)).scale(0.7)
-        n.next_to(tex[i],DOWN,buff=0.01)
-        ni.add(n)
-    return ni
-
 
 def animate_sum_steps(self: Scene, n1: MT, n2: MT, final_sum: MT, box: SurroundingRectangle, slices: list[int | slice | tuple[int | slice, ...]], t_slice_map: dict[int | slice, int | slice] = None):
     if t_slice_map is None:
@@ -43,11 +34,7 @@ def animate_sum_steps(self: Scene, n1: MT, n2: MT, final_sum: MT, box: Surroundi
 
 
 class Setup(Scene):
-    """This scene just shows how the i-cat notation works.
-    
-    TODO:
-    - maybe show more cases of the index being used for non-infinite repeats.
-    """
+    """This scene just shows how the i-cat notation works."""
     def construct(self):
             self.add(Text("I-Cat Notation Example", font_size=36).to_corner(UL, 0.5))
 
@@ -220,7 +207,7 @@ class Simplest_V1(Scene):
             final_group.animate.center()
         )
         self.play(
-            final_group.animate.scale(1.4),
+            final_group.animate.scale(1.2),
             Uncreate(target_box)
         )
         self.wait(5)
@@ -326,7 +313,7 @@ class Simplest_V2(Scene):
             final_group.animate.center()
         )
         self.play(
-            final_group.animate.scale(1.4),
+            final_group.animate.scale(1.2),
             Uncreate(target_box)
         )
         self.wait(5)
@@ -412,7 +399,7 @@ class Unpacking(Scene):
             final_group.animate.center()
         )
         self.play(
-            final_group.animate.scale(1.3),
+            final_group.animate.scale(1.2),
             Uncreate(target_box)
         )
         self.wait(4)
@@ -488,7 +475,7 @@ class Carrying(MovingCameraScene):
             6: 8,
             slice(4, 6): slice(6, 8)
         }
-        animate_sum_steps(self, n1, n2, sum_0, box, [6, slice(4, 6), 3, 2, slice(0, 2)], t_slice_map=_i_map)
+        animate_sum_steps(self, n1, n2, sum_0, box, [6, slice(4, 6), 3, 2, (0, 1)], t_slice_map=_i_map)
         self.play(Uncreate(box))
         self.wait()
 
@@ -504,7 +491,8 @@ class Carrying(MovingCameraScene):
             return arrow.animate.move_to(
                 sum_0[0][target_idx].get_top() + LEFT*0.1 + UP*0.1
             )
-        self.play(FadeIn(arrow), self.camera.frame.animate.set_width(3).move_to(sum_0))
+        self.play(FadeOut(line), self.camera.frame.animate.set_width(3).move_to(sum_0))
+        self.play(Create(arrow))
         self.wait()
         self.play(move_carry_arrow(2), sum_0.animate.become(MT(r"2.^1{1} 1 \icat^3 6").move_to(sum_0)), run_time=2)
         self.wait()
@@ -513,13 +501,16 @@ class Carrying(MovingCameraScene):
         self.play(sum_0[0][3:5].animate.set_color(BLUE).scale(1.2), rate_func=there_and_back)
         self.play(sum_0.animate.become(MT(r"3.\icat^2 1 \icat^3 6").move_to(sum_0)))
         self.wait()
-        self.play(self.camera.frame.animate.set_width(14).move_to(ORIGIN))
+        self.play(FadeIn(line), self.camera.frame.animate.set_width(14).move_to(ORIGIN))
         
         # final answer
-        final_group = VGroup(sum_0, addition_group)
+
+        final_group = VGroup(sum_0, addition_group, box)
+        box = SurroundingRectangle(final_group, color=GREEN, buff=0.3)
+        self.play(Create(box))
         self.play(
-            final_group.animate.center(),
-            final_group.animate.scale(1.3)
+            final_group.animate.center().scale(1.2),
+            box.animate.center().scale(1.2)
         )
-        
-        self.wait(4)
+
+        self.wait(5)
