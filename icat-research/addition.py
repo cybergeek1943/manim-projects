@@ -1,13 +1,6 @@
-from itertools import cycle
 from manim import *
 from manim import MathTex as MT
 import config  # to enable the I-Cat notation in all MathTex instances
-"""
-TODO:
-Number * icat
-Icat * Icat 
-Bring down the paranthesis seperately than the numbers.
-"""
 
 
 def animate_sum_steps(self: Scene, n1: MT, n2: MT, final_sum: MT, box: SurroundingRectangle, slices: list[int | slice | tuple[int | slice, ...]], t_slice_map: dict[int | slice, int | slice] = None):
@@ -169,9 +162,8 @@ class Simplest_V1(Scene):
 
         # index check
         self.play(
-            n1[0][3].animate.set_color(ORANGE).scale(2),
-            n2[0][3].animate.set_color(ORANGE).scale(2),
-            rate_func=there_and_back,
+            Indicate(n1[0][3], scale_factor=2, color=ORANGE),
+            Indicate(n2[0][3], scale_factor=2, color=ORANGE)
         )
         index_eq = MT('9 = 9').next_to(note[25], buff=0.8)
         self.play(ReplacementTransform(VGroup(n1[0][3].copy(), n2[0][3].copy()), index_eq))
@@ -275,9 +267,8 @@ class Simplest_V2(Scene):
 
         # index check
         self.play(
-            n1[0][3].animate.set_color(ORANGE).scale(2),
-            n2[0][3].animate.set_color(ORANGE).scale(2),
-            rate_func=there_and_back,
+            Indicate(n1[0][3], scale_factor=2, color=ORANGE),
+            Indicate(n2[0][3], scale_factor=2, color=ORANGE)
         )
         index_eq = MT('9 = 9').next_to(note[25], buff=0.8)
         self.play(ReplacementTransform(VGroup(n1[0][3].copy(), n2[0][3].copy()), index_eq))
@@ -352,9 +343,8 @@ class Unpacking(Scene):
 
         # index check
         self.play(
-            n1[0][3].animate.set_color(ORANGE).scale(2),
-            n2[0][3].animate.set_color(ORANGE).scale(2),
-            rate_func=there_and_back,
+            Indicate(n1[0][3], scale_factor=2, color=ORANGE),
+            Indicate(n2[0][3], scale_factor=2, color=ORANGE)
         )
         index_eq = MT(r'{{5}} \neq 6').next_to(n1[0][3], UP, buff=0.8)
         self.play(ReplacementTransform(VGroup(n1[0][3].copy(), n2[0][3].copy()), index_eq))
@@ -417,7 +407,7 @@ class Carrying(MovingCameraScene):
         self.wait()
 
         # show notes
-        note = Text('We want to add these two numbers.', font_size=20);
+        note = Text('We want to add these.', font_size=20);
         self.play(Create(note))
         self.wait()
 
@@ -465,7 +455,7 @@ class Carrying(MovingCameraScene):
         # calculate initial sum (with carry pre-superscripts)
         box = SurroundingRectangle(VGroup(n1[0][6], n2[0][6]), color=BLUE, buff=0.1)
         self.play(Create(box))
-        sum_0 = MT(r"2.^1{0} ^1{1} \icat^3 6").next_to(line, DOWN, buff=0.3)
+        sum_0 = MT(r"2.^1{0} \; ^1{1} \icat^3 6").next_to(line, DOWN, buff=0.3)
         sum_0.align_to(addition_stack, RIGHT)  # Align the whole block to the stack
         sum_0.set_opacity(0)  # Hide it initially
         self.add(sum_0)
@@ -498,19 +488,14 @@ class Carrying(MovingCameraScene):
         self.wait()
         self.play(FadeOut(arrow), sum_0.animate.become(MT(r"3.11 \icat^3 6").move_to(sum_0)), run_time=2)
         self.wait()
-        self.play(sum_0[0][3:5].animate.set_color(BLUE).scale(1.2), rate_func=there_and_back)
+        self.play(Indicate(sum_0[0][3:5], color=BLUE))
         self.play(sum_0.animate.become(MT(r"3.\icat^2 1 \icat^3 6").move_to(sum_0)))
         self.wait()
         self.play(FadeIn(line), self.camera.frame.animate.set_width(14).move_to(ORIGIN))
         
         # final answer
-
         final_group = VGroup(sum_0, addition_group, box)
-        box = SurroundingRectangle(final_group, color=GREEN, buff=0.3)
-        self.play(Create(box))
-        self.play(
-            final_group.animate.center().scale(1.2),
-            box.animate.center().scale(1.2)
-        )
+        self.play(final_group.animate.center().scale(1.2))
+        self.play(Circumscribe(final_group, color=GREEN, time_width=1, buff=0.4), run_time=3)
 
         self.wait(5)
