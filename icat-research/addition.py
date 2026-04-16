@@ -486,7 +486,6 @@ class Carrying(MovingCameraScene):
         self.wait()
         self.play(move_carry_arrow(2), sum_0.animate.become(MT(r"2.^1{1} 1 \icat^3 6").move_to(sum_0)), run_time=2)
         self.wait()
-        return
         self.play(FadeOut(arrow), sum_0.animate.become(MT(r"3.11 \icat^3 6").move_to(sum_0)), run_time=2)
         self.wait()
         self.play(Indicate(sum_0[0][3:5], color=BLUE))
