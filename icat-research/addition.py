@@ -476,7 +476,7 @@ class Carrying(MovingCameraScene):
                 angle=TAU/2.5,
                 tip_length=0.08
         ).set_stroke(width=3).set_color(YELLOW)
-        arrow.rotate(PI/4)
+        arrow.rotate(PI/5)
         def move_carry_arrow(target_idx):
             return arrow.animate.move_to(
                 sum_0[0][target_idx].get_top() + LEFT*0.1 + UP*0.1
@@ -486,6 +486,7 @@ class Carrying(MovingCameraScene):
         self.wait()
         self.play(move_carry_arrow(2), sum_0.animate.become(MT(r"2.^1{1} 1 \icat^3 6").move_to(sum_0)), run_time=2)
         self.wait()
+        return
         self.play(FadeOut(arrow), sum_0.animate.become(MT(r"3.11 \icat^3 6").move_to(sum_0)), run_time=2)
         self.wait()
         self.play(Indicate(sum_0[0][3:5], color=BLUE))
@@ -496,6 +497,6 @@ class Carrying(MovingCameraScene):
         # final answer
         final_group = VGroup(sum_0, addition_group, box)
         self.play(final_group.animate.center().scale(1.2))
-        self.play(Circumscribe(final_group, color=GREEN, time_width=1, buff=0.4), run_time=3)
+        self.play(Circumscribe(final_group, color=GREEN, time_width=1, buff=0.4))
 
         self.wait(5)

@@ -112,8 +112,8 @@ class Multiply(Scene):
         self.play(TransformMatchingShapes(r, rt), run_time=3)
         r = rt
 
-        # ==== propogate the carries ====
-        self.play(update_step_note('Step 4: We can now propogate the carries!'))
+        # ==== propagate the carries ====
+        self.play(update_step_note('Step 4: We can now propagate the carries!'))
         self.wait(2)
         self.play(r.animate.shift(DOWN*0.4).scale(2))
         
