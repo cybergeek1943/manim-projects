@@ -1,6 +1,11 @@
+"""
+This is generally just a copy of the code for the videos to support the slides.
+Needs to be updated after changing video scripts.
+"""
 from manim import *
 from manim import MathTex as MT
 import config  # to enable the I-Cat notation in all MathTex instances
+from manim_slides import Slide
 
 
 def animate_sum_steps(self: Scene, n1: MT, n2: MT, final_sum: MT, box: SurroundingRectangle, slices: list[int | slice | tuple[int | slice, ...]], t_slice_map: dict[int | slice, int | slice] = None):
@@ -23,10 +28,10 @@ def animate_sum_steps(self: Scene, n1: MT, n2: MT, final_sum: MT, box: Surroundi
             ReplacementTransform(n2_src.copy(), target),
             target.animate.set_opacity(1), # Reveal only this digit
         )
-        self.wait(0.2)
+        self.next_slide()
 
 
-class Setup(Scene):
+class Setup(Slide):
     """This scene just shows how the i-cat notation works."""
     def construct(self):
             self.add(Text("I-Cat Notation Example", font_size=36).to_corner(UL, 0.5))
@@ -46,19 +51,19 @@ class Setup(Scene):
                     eq3 = MT(step1_str, step2_str, step3_str)
 
                 self.play(Write(eq1))
-                self.wait(0.5)
+                self.next_slide()
                 if not step2_str:
                     return eq1
 
                 eq2.move_to(eq1)
                 self.play(TransformMatchingTex(eq1, eq2), run_time=2)
-                self.wait(0.5)
+                self.next_slide()
                 if not step3_str:
                     return eq2
 
                 eq3.move_to(eq2)
                 self.play(TransformMatchingTex(eq2, eq3), run_time=2)
-                self.wait(0.5)
+                self.next_slide()
                 return eq3
             
             a1 = animate_icat_conversion(
@@ -72,6 +77,7 @@ class Setup(Scene):
                 a1.animate.shift(UP),
                 FadeIn(and_text)
             )
+            self.next_slide()
             
             a2 = animate_icat_conversion(
                 r"7.101010...", 
@@ -84,6 +90,7 @@ class Setup(Scene):
                 and_text.animate.shift(DOWN),
                 a2.animate.shift(UP)
             )
+            self.next_slide()
 
             a3 = animate_icat_conversion(
                 r"205555555456456456", 
@@ -91,16 +98,17 @@ class Setup(Scene):
                 "",
                 init_move_to=DOWN * 2
             )
+            self.next_slide()
 
             self.play(
                 FadeOut(and_text),
                 a3.animate.move_to(DOWN)
             )
 
-            self.wait(5)
+            self.next_slide()
 
 
-class Simplest_V1(Scene):
+class Simplest_V1(Slide):
     def construct(self):
         title = Text("Simple Addition", font_size=36).to_corner(UL, 0.5)
         self.add(title)
@@ -109,14 +117,14 @@ class Simplest_V1(Scene):
         n1 = MT(r"0.78282828282828282").shift(UP)
         n2 = MT(r"0.21313131313131313").shift(DOWN)
         self.play(Create(n1), Create(n2), run_time=1)
-        self.wait()
+        self.next_slide()
 
         # show notes
         note = Text('We want to add these.', font_size=20);
         self.play(Create(note))
-        self.wait()
+        self.next_slide()
         self.play(Transform(note, Text("Let's look at the I-Cat form.", font_size=20)))
-        self.wait()
+        self.next_slide()
 
         # transform to i-cat
         n1t = MT(r'0.7 \icat^9 (82)').move_to(n1)
@@ -124,7 +132,7 @@ class Simplest_V1(Scene):
         self.play(TransformMatchingShapes(n1, n1t), run_time=2)
         self.play(TransformMatchingShapes(n2, n2t), run_time=2)
         n1, n2 = n1t, n2t
-        self.wait()
+        self.next_slide()
 
         # move to adding line
         addition_stack = VGroup(n1, n2)
@@ -142,7 +150,7 @@ class Simplest_V1(Scene):
         )
         note.become(Text('Pre-check:\n• Aligned?\n• Index?', font_size=25, line_spacing=1.5)).to_edge(buff=2)
         self.play(FadeIn(note), addition_group.animate.shift(RIGHT))
-        self.wait()
+        self.next_slide()
 
         # alignment check
         box = SurroundingRectangle(VGroup(n1[0][0], n2[0][0]), color=YELLOW, buff=0.1)
@@ -152,13 +160,13 @@ class Simplest_V1(Scene):
             self.play(
                 Transform(box, target_box)
             )
-            self.wait(0.2)
+            self.next_slide()
         self.play(  # transform surround box into label
             ReplacementTransform(box, note[10:18]),
             note[10:18].animate.set_color(GREEN),
             note[18].animate.set_color(BLACK),  # hide the question mark
         )
-        self.wait()
+        self.next_slide()
 
         # index check
         self.play(
@@ -168,7 +176,7 @@ class Simplest_V1(Scene):
         index_eq = MT('9 = 9').next_to(note[25], buff=0.8)
         self.play(ReplacementTransform(VGroup(n1[0][3].copy(), n2[0][3].copy()), index_eq))
         self.play(index_eq.animate.set_color(GREEN))
-        self.wait(0.4)
+        self.next_slide()
         self.play(  # transform index_eq into label
             ReplacementTransform(index_eq, note[19:25]),
             note[19:25].animate.set_color(GREEN),
@@ -180,7 +188,7 @@ class Simplest_V1(Scene):
             FadeOut(note),
             addition_group.animate.center()
         )
-        self.wait()
+        self.next_slide()
 
         # calculate sum
         box = SurroundingRectangle(VGroup(n1[0][7], n2[0][7]), color=BLUE, buff=0.1)
@@ -202,10 +210,10 @@ class Simplest_V1(Scene):
             final_group.animate.scale(1.2),
             Uncreate(target_box)
         )
-        self.wait(5)
+        self.next_slide()
 
 
-class Simplest_V2(Scene):
+class Simplest_V2(Slide):
     def construct(self):
         title = Text("Simple Addition", font_size=36).to_corner(UL, 0.5)
         self.add(title)
@@ -214,14 +222,14 @@ class Simplest_V2(Scene):
         n1 = MT(r"0.78888888882").shift(UP)
         n2 = MT(r"0.21111111113").shift(DOWN)
         self.play(Create(n1), Create(n2), run_time=1)
-        self.wait()
+        self.next_slide()
 
         # show notes
         note = Text('We want to add these.', font_size=20);
         self.play(Create(note))
-        self.wait()
+        self.next_slide()
         self.play(Transform(note, Text("Let's look at the I-Cat form.", font_size=20)))
-        self.wait()
+        self.next_slide()
 
         # transform to i-cat
         n1t = MT(r'0.7 \icat^9 (8) 2').move_to(n1)
@@ -229,7 +237,7 @@ class Simplest_V2(Scene):
         self.play(TransformMatchingShapes(n1, n1t), run_time=2)
         self.play(TransformMatchingShapes(n2, n2t), run_time=2)
         n1, n2 = n1t, n2t
-        self.wait()
+        self.next_slide()
 
         # move to adding line
         addition_stack = VGroup(n1, n2)
@@ -247,7 +255,7 @@ class Simplest_V2(Scene):
         )
         note.become(Text('Pre-check:\n• Aligned?\n• Index?', font_size=25, line_spacing=1.5)).to_edge(buff=2)
         self.play(FadeIn(note), addition_group.animate.shift(RIGHT))
-        self.wait()
+        self.next_slide()
 
         # alignment check
         box = SurroundingRectangle(VGroup(n1[0][0], n2[0][0]), color=YELLOW, buff=0.1)
@@ -257,13 +265,13 @@ class Simplest_V2(Scene):
             self.play(
                 Transform(box, target_box)
             )
-            self.wait(0.2)
+            self.next_slide()
         self.play(  # transform surround box into label
             ReplacementTransform(box, note[10:18]),
             note[10:18].animate.set_color(GREEN),
             note[18].animate.set_color(BLACK),  # hide the question mark
         )
-        self.wait()
+        self.next_slide()
 
         # index check
         self.play(
@@ -273,7 +281,7 @@ class Simplest_V2(Scene):
         index_eq = MT('9 = 9').next_to(note[25], buff=0.8)
         self.play(ReplacementTransform(VGroup(n1[0][3].copy(), n2[0][3].copy()), index_eq))
         self.play(index_eq.animate.set_color(GREEN))
-        self.wait(0.4)
+        self.next_slide()
         self.play(  # transform index_eq into label
             ReplacementTransform(index_eq, note[19:25]),
             note[19:25].animate.set_color(GREEN),
@@ -285,7 +293,7 @@ class Simplest_V2(Scene):
             FadeOut(note),
             addition_group.animate.center()
         )
-        self.wait()
+        self.next_slide()
 
         # calculate sum
         box = SurroundingRectangle(VGroup(n1[0][8], n2[0][8]), color=BLUE, buff=0.1)
@@ -307,10 +315,10 @@ class Simplest_V2(Scene):
             final_group.animate.scale(1.2),
             Uncreate(target_box)
         )
-        self.wait(5)
+        self.next_slide()
 
 
-class Unpacking(Scene):
+class Unpacking(Slide):
     def construct(self):
         title = Text("Addition: Alignment Unpacking", font_size=36).to_corner(UL, 0.5)
         self.add(title)
@@ -319,12 +327,12 @@ class Unpacking(Scene):
         n1 = MT(r'0.2 \icat^5 4').shift(UP)
         n2 = MT(r'0.3 \icat^6 5').shift(DOWN)
         self.play(Create(n1), Create(n2), run_time=1)
-        self.wait()
+        self.next_slide()
 
         # show notes
         note = Text('We want to add these.', font_size=20);
         self.play(Create(note))
-        self.wait()
+        self.next_slide()
 
         # move to adding line
         addition_stack = VGroup(n1, n2)
@@ -349,7 +357,7 @@ class Unpacking(Scene):
         index_eq = MT(r'{{5}} \neq 6').next_to(n1[0][3], UP, buff=0.8)
         self.play(ReplacementTransform(VGroup(n1[0][3].copy(), n2[0][3].copy()), index_eq))
         self.play(index_eq.animate.set_color(RED))
-        self.wait()
+        self.next_slide()
 
         # partially unpack
         n1t = MT(r'0.2 \icat^5 (4) 0').move_to(n1, LEFT)
@@ -363,14 +371,14 @@ class Unpacking(Scene):
         self.play(TransformMatchingShapes(n1, n1t))
         n1, n2, index_eq = n1t, n2t, index_eq_t
         addition_stack.submobjects = [n1, n2]
-        self.wait()
+        self.next_slide()
 
         # center the addition_group
         self.play(
             FadeOut(index_eq_t),
             addition_group.animate.center()
         )
-        self.wait()
+        self.next_slide()
 
         # calculate sum
         box = SurroundingRectangle(VGroup(n1[0][8], n2[0][8]), color=BLUE, buff=0.1)
@@ -392,10 +400,10 @@ class Unpacking(Scene):
             final_group.animate.scale(1.2),
             Uncreate(target_box)
         )
-        self.wait(4)
+        self.next_slide()
 
 
-class Carrying(MovingCameraScene):
+class Carrying(Slide):
     def construct(self):
         title = Text("Addition: Carrying", font_size=36).to_corner(UL, 0.5)
         self.add(title)
@@ -404,12 +412,12 @@ class Carrying(MovingCameraScene):
         n1 = MT('1.45').shift(UP)
         n2 = MT(r'1. \icat^5 6').shift(DOWN)
         self.play(Create(n1), Create(n2), run_time=1)
-        self.wait()
+        self.next_slide()
 
         # show notes
         note = Text('We want to add these.', font_size=20);
         self.play(Create(note))
-        self.wait()
+        self.next_slide()
 
         # move to adding line
         addition_stack = VGroup(n1, n2)
@@ -431,9 +439,9 @@ class Carrying(MovingCameraScene):
         self.play(Create(box))
         note.become(Text('Misaligned!', font_size=25, color=RED)).next_to(addition_group, UP, buff=0.8)
         self.play(ReplacementTransform(box, note))
-        self.wait()
+        self.next_slide()
         self.play(Transform(note, Text('Prepare: Partially Unpack', font_size=25, color=GREEN).move_to(note)))
-        self.wait()
+        self.next_slide()
 
         # partially unpack
         n2t1 = MT(r'1.6 \icat^4 6').move_to(n2, LEFT)
@@ -444,7 +452,7 @@ class Carrying(MovingCameraScene):
         self.play(TransformMatchingShapes(n1, n1t))
         n1, n2 = n1t, n2t2
         addition_stack.submobjects = [n1, n2]
-        self.wait()
+        self.next_slide()
 
         # center the addition_group
         self.play(
@@ -467,7 +475,7 @@ class Carrying(MovingCameraScene):
         }
         animate_sum_steps(self, n1, n2, sum_0, box, [6, slice(4, 6), 3, 2, (0, 1)], t_slice_map=_i_map)
         self.play(Uncreate(box))
-        self.wait()
+        self.next_slide()
 
         # perform the carries
         arrow = CurvedArrow(
@@ -481,21 +489,21 @@ class Carrying(MovingCameraScene):
             return arrow.animate.move_to(
                 sum_0[0][target_idx].get_top() + LEFT*0.1 + UP*0.1
             )
-        self.play(FadeOut(line), self.camera.frame.animate.set_width(3).move_to(sum_0))
+        # self.play(FadeOut(line), self.camera.frame.animate.set_width(3).move_to(sum_0))
         self.play(Create(arrow))
-        self.wait()
+        self.next_slide()
         self.play(move_carry_arrow(2), sum_0.animate.become(MT(r"2.^1{1} 1 \icat^3 6").move_to(sum_0)), run_time=2)
-        self.wait()
+        self.next_slide()
         self.play(FadeOut(arrow), sum_0.animate.become(MT(r"3.11 \icat^3 6").move_to(sum_0)), run_time=2)
-        self.wait()
+        self.next_slide()
         self.play(Indicate(sum_0[0][3:5], color=BLUE))
         self.play(sum_0.animate.become(MT(r"3.\icat^2 1 \icat^3 6").move_to(sum_0)))
-        self.wait()
-        self.play(FadeIn(line), self.camera.frame.animate.set_width(14).move_to(ORIGIN))
+        self.next_slide()
+        # self.play(FadeIn(line), self.camera.frame.animate.set_width(14).move_to(ORIGIN))
         
         # final answer
         final_group = VGroup(sum_0, addition_group, box)
         self.play(final_group.animate.center().scale(1.2))
         self.play(Circumscribe(final_group, color=GREEN, time_width=1, buff=0.4))
 
-        self.wait(5)
+        self.next_slide()

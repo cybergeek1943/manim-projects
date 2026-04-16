@@ -1,9 +1,14 @@
+"""
+This is generally just a copy of the code for the videos to support the slides.
+Needs to be updated after changing video scripts.
+"""
 from manim import *
 from manim import MathTex as MT
 import config  # to enable the I-Cat notation in all MathTex instances
+from manim_slides import Slide
 
 
-class Multiply(Scene):
+class Multiply(Slide):
     def construct(self):
         title = Text("Multiplication", font_size=36).to_corner(UL, 0.5)
         self.add(title)
@@ -12,20 +17,20 @@ class Multiply(Scene):
         n1 = MT('12121212').shift(UP)
         n2 = MT('46').shift(DOWN)
         self.play(Create(n1), Create(n2))
-        self.wait()
+        self.next_slide()
 
         # show notes
         note = Text('We want to multiply these.', font_size=20);
         self.play(Create(note))
-        self.wait()
+        self.next_slide()
         self.play(Transform(note, Text("Let's look at the I-Cat form.", font_size=20).move_to(note)))
-        self.wait()
+        self.next_slide()
 
         # convert to icat form
         n1t = MT(r'\icat^4 (12)').move_to(n1)
         self.play(TransformMatchingShapes(n1, n1t))
         n1 = n1t
-        self.wait()
+        self.next_slide()
 
         # move to multiply line
         num_stack = VGroup(n1, n2)
@@ -68,11 +73,11 @@ class Multiply(Scene):
             n1[0][4].copy().animate.move_to(rt[0][4]).set_opacity(0),
             n2.copy().animate.move_to(rt[0][6:8]).set_opacity(0)
         )
-        self.wait(0.4)
+        self.next_slide()
         r = rt
         rt = MT(r'\icat^4 (? \quad 2 \times 46 = 92 \;)').move_to(r)
         self.play(TransformMatchingShapes(r, rt))
-        self.wait(0.4)
+        self.next_slide()
         r = rt
         rt = MT(r'\icat^4 (? \; ^9{2})').move_to(r)
         self.play(TransformMatchingShapes(r, rt))
@@ -88,11 +93,11 @@ class Multiply(Scene):
             n1[0][3].copy().animate.move_to(rt[0][3]).set_opacity(0),
             n2.copy().animate.move_to(rt[0][5:7]).set_opacity(0)
         )
-        self.wait(0.4)
+        self.next_slide()
         r = rt
         rt = MT(r'\icat^4 (\; 1 \times 46 = 46 \quad ^9{2})').move_to(r)
         self.play(TransformMatchingShapes(r, rt))
-        self.wait(0.4)
+        self.next_slide()
         r = rt
         rt = MT(r'\icat^4 (^4{6} \; ^9{2})').move_to(r)
         self.play(TransformMatchingShapes(r, rt))
@@ -107,14 +112,14 @@ class Multiply(Scene):
             FadeOut(mult_group),
             r.animate.center().scale(1.25)
         )
-        self.wait(2)
+        self.next_slide()
         rt = MT(r'\icat^3 (^4{6} \; ^9{2}) \; ^4{6} \; ^9{2}').move_to(r)
         self.play(TransformMatchingShapes(r, rt), run_time=3)
         r = rt
 
         # ==== propagate the carries ====
         self.play(update_step_note('Step 4: We can now propagate the carries!'))
-        self.wait(2)
+        self.next_slide()
         self.play(r.animate.shift(DOWN*0.4).scale(2))
         
         arrow = CurvedArrow(ORIGIN, ORIGIN).next_to(r, UP, aligned_edge=RIGHT)
@@ -195,4 +200,4 @@ class Multiply(Scene):
             run_time=3
         )
 
-        self.wait(5)
+        self.next_slide()
